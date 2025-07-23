@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 import { MenuBar } from "@/components/ui/glow-menu";
 import { Home, Info, Mail, Briefcase, Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -9,7 +11,7 @@ const menuItems = [
   {
     icon: Home,
     label: "Home",
-    href: "#home",
+    href: "/",
     gradient:
       "radial-gradient(circle, rgba(59,130,246,0.15) 0%, rgba(37,99,235,0.06) 50%, rgba(29,78,216,0) 100%)",
     iconColor: "text-blue-500",
@@ -17,7 +19,7 @@ const menuItems = [
   {
     icon: Info,
     label: "About",
-    href: "#about",
+    href: "/about",
     gradient:
       "radial-gradient(circle, rgba(34,197,94,0.15) 0%, rgba(22,163,74,0.06) 50%, rgba(21,128,61,0) 100%)",
     iconColor: "text-green-500",
@@ -25,7 +27,7 @@ const menuItems = [
   {
     icon: Briefcase,
     label: "Services",
-    href: "#services",
+    href: "/services",
     gradient:
       "radial-gradient(circle, rgba(249,115,22,0.15) 0%, rgba(234,88,12,0.06) 50%, rgba(194,65,12,0) 100%)",
     iconColor: "text-orange-500",
@@ -33,7 +35,7 @@ const menuItems = [
   {
     icon: Mail,
     label: "Contact",
-    href: "#contact",
+    href: "/contact",
     gradient:
       "radial-gradient(circle, rgba(239,68,68,0.15) 0%, rgba(220,38,38,0.06) 50%, rgba(185,28,28,0) 100%)",
     iconColor: "text-red-500",
@@ -41,18 +43,26 @@ const menuItems = [
 ];
 
 export function Navigation() {
-  const [activeItem, setActiveItem] = useState<string>("Home");
+  const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const handleItemClick = (label: string, href: string) => {
-    setActiveItem(label);
+  // Determine active item based on current path
+  const getActiveItem = () => {
+    if (pathname === "/") return "Home";
+    if (pathname === "/about") return "About";
+    if (pathname === "/services") return "Services";
+    if (pathname === "/contact") return "Contact";
+    return "Home";
+  };
+
+  const [activeItem, setActiveItem] = useState<string>(getActiveItem());
+
+  useEffect(() => {
+    setActiveItem(getActiveItem());
+  }, [pathname]);
+
+  const handleItemClick = () => {
     setIsMobileMenuOpen(false);
-    
-    // Smooth scroll to section
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
   };
 
   return (
@@ -62,10 +72,7 @@ export function Navigation() {
         <MenuBar
           items={menuItems}
           activeItem={activeItem}
-          onItemClick={(label) => {
-            const item = menuItems.find(item => item.label === label);
-            if (item) handleItemClick(label, item.href);
-          }}
+          onItemClick={handleItemClick}
         />
       </div>
 
@@ -98,27 +105,24 @@ export function Navigation() {
                 const isActive = item.label === activeItem;
 
                 return (
-                  <motion.button
-                    key={item.label}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleItemClick(item.label, item.href);
-                    }}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-left ${
-                      isActive
-                        ? "bg-gray-800 text-white"
-                        : "text-gray-400 hover:bg-gray-800/50 hover:text-white"
-                    }`}
-                    whileHover={{ x: 5 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <Icon
-                      className={`h-5 w-5 ${
-                        isActive ? item.iconColor : ""
+                  <Link key={item.label} href={item.href} onClick={handleItemClick}>
+                    <motion.div
+                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-left ${
+                        isActive
+                          ? "bg-gray-800 text-white"
+                          : "text-gray-400 hover:bg-gray-800/50 hover:text-white"
                       }`}
-                    />
-                    <span>{item.label}</span>
-                  </motion.button>
+                      whileHover={{ x: 5 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <Icon
+                        className={`h-5 w-5 ${
+                          isActive ? item.iconColor : ""
+                        }`}
+                      />
+                      <span>{item.label}</span>
+                    </motion.div>
+                  </Link>
                 );
               })}
             </div>

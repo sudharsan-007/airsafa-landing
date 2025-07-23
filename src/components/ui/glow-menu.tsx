@@ -5,6 +5,7 @@ import { motion } from "framer-motion"
 import { useTheme } from "next-themes"
 import { cn } from "@/lib/utils"
 import { LucideIcon } from "lucide-react"
+import Link from "next/link"
 
 interface MenuItem {
   icon: LucideIcon | React.FC
@@ -97,10 +98,11 @@ export const MenuBar = React.forwardRef<HTMLDivElement, MenuBarProps>(
 
             return (
               <motion.li key={item.label} className="relative">
-                <button
-                  onClick={() => onItemClick?.(item.label)}
-                  className="block w-full"
-                >
+                <Link href={item.href}>
+                  <button
+                    onClick={() => onItemClick?.(item.label)}
+                    className="block w-full"
+                  >
                   <motion.div
                     className="block rounded-xl overflow-visible group relative"
                     style={{ perspective: "600px" }}
@@ -170,6 +172,7 @@ export const MenuBar = React.forwardRef<HTMLDivElement, MenuBarProps>(
                     </motion.div>
                   </motion.div>
                 </button>
+                </Link>
               </motion.li>
             )
           })}

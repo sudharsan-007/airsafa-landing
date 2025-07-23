@@ -418,18 +418,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Add more sections here if needed */}
-      <section id="about" className="min-h-screen flex items-center justify-center">
-        <h2 className="text-4xl font-bold">About Section</h2>
-      </section>
-
-      <section id="services" className="min-h-screen flex items-center justify-center bg-gray-900">
-        <h2 className="text-4xl font-bold">Services Section</h2>
-      </section>
-
-      <section id="contact" className="min-h-screen flex items-center justify-center">
-        <h2 className="text-4xl font-bold">Contact Section</h2>
-      </section>
     </div>
   );
 }
