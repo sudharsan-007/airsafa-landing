@@ -10,6 +10,11 @@
 !.yarn/releases
 !.yarn/versions
 
+# lockfiles (keep only package-lock.json for consistent deployments)
+bun.lock
+yarn.lock
+pnpm-lock.yaml
+
 # testing
 /coverage
 
