@@ -80,9 +80,9 @@ export function Header() {
     ];
     
     return (
-        <header className="w-full z-50 fixed top-0 left-0 bg-background/80 backdrop-blur-sm border-b border-border">
+        <header className="w-full z-50 fixed top-0 left-0 bg-background/90 backdrop-blur-md border-b border-border">
             <div className="container relative mx-auto px-4 md:px-6 min-h-16 md:min-h-20 flex gap-4 flex-row lg:grid lg:grid-cols-3 items-center">
-                <nav className="justify-start items-center gap-1 lg:flex hidden flex-row">
+                <nav className="justify-start items-stretch gap-1 lg:flex hidden flex-row h-16 md:h-20">
                     {navigationItems.map((item) => (
                         item.href ? (
                             <Link 
@@ -92,7 +92,7 @@ export function Header() {
                                     pathname === item.href 
                                         ? "font-semibold text-foreground" 
                                         : "text-muted-foreground"
-                                } hover:text-foreground transition-colors py-2 px-3`}
+                                } hover:text-foreground transition-colors px-3 flex items-center h-full`}
                             >
                                 {item.title}
                             </Link>
@@ -109,7 +109,7 @@ export function Header() {
                 </nav>
                 <div className="flex lg:justify-center flex-1 lg:flex-none">
                     <Link href="/" className="font-bold text-xl md:text-2xl text-foreground hover:text-primary transition-colors">
-                        Airsafa
+                        Air Safa
                     </Link>
                 </div>
                 <div className="flex justify-end w-full gap-4">
@@ -145,7 +145,7 @@ export function Header() {
                                 className="fixed inset-0 bg-background/80 backdrop-blur-sm lg:hidden" 
                                 onClick={() => setOpen(false)}
                             />
-                            <div className="fixed top-16 left-4 right-4 bg-background border border-border rounded-lg shadow-xl overflow-hidden lg:hidden">
+                            <div className="fixed top-16 left-4 right-4 mobile-menu-frosted border border-border rounded-lg shadow-xl overflow-hidden lg:hidden">
                                 <div className="p-6 flex flex-col gap-6 max-h-[calc(100vh-100px)] overflow-y-auto">
                                 {navigationItems.map((item, index) => (
                                     <div key={item.title} className="space-y-2">

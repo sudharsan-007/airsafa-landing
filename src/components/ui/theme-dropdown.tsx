@@ -59,7 +59,6 @@ export function ThemeDropdown() {
     },
   ];
 
-  const currentTheme = themes.find(t => t.value === theme) || themes[2];
   const Icon = resolvedTheme === "dark" ? Moon : Sun;
 
   return (
@@ -83,7 +82,7 @@ export function ThemeDropdown() {
             transition={{ duration: 0.2 }}
             className="absolute right-0 top-full mt-2 w-36 origin-top-right"
           >
-            <div className="rounded-lg border border-border bg-background p-1 shadow-lg">
+            <div className="rounded-lg border border-border dropdown-frosted p-1 shadow-lg">
               {themes.map((themeOption) => {
                 const isActive = theme === themeOption.value;
                 const ThemeIcon = themeOption.icon;

@@ -444,7 +444,7 @@ export default function HomePage() {
         {/* Hero Content */}
         <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6">
-            Airsafa 
+            Air Safa 
           </h1>
           <p className="text-xl sm:text-2xl text-muted-foreground mb-8">
             Connect the unconnected - Flying soon!

@@ -1,12 +1,11 @@
 "use client";
 import React from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { useTheme } from "next-themes";
 
 const transition = {
-  type: "spring",
+  type: "spring" as const,
   mass: 0.5,
   damping: 11.5,
   stiffness: 100,
@@ -25,7 +24,6 @@ export const MenuItem = ({
   item: string;
   children?: React.ReactNode;
 }) => {
-  const { theme } = useTheme();
   const [isOpen, setIsOpen] = React.useState(false);
   
   return (
@@ -82,11 +80,13 @@ export const MenuItem = ({
   );
 };
 
-export const HoveredLink = ({ children, href, ...rest }: { 
+interface HoveredLinkProps {
   children: React.ReactNode;
   href: string;
-  [key: string]: any;
-}) => {
+  className?: string;
+}
+
+export const HoveredLink = ({ children, href, ...rest }: HoveredLinkProps) => {
   return (
     <Link
       href={href}

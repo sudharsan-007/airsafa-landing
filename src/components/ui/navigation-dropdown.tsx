@@ -70,11 +70,11 @@ export function NavigationDropdown({
 
   return (
     <div
-      className="relative"
+      className="relative flex items-center h-full"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <button className="text-muted-foreground hover:text-foreground transition-colors py-2 px-3">
+      <button className="text-muted-foreground hover:text-foreground transition-colors h-full px-3 flex items-center">
         {trigger}
       </button>
       
@@ -87,11 +87,11 @@ export function NavigationDropdown({
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
             className={cn(
-              "absolute top-full bg-background rounded-xl border border-border shadow-lg overflow-hidden",
+              "absolute dropdown-frosted rounded-xl border border-border shadow-lg overflow-hidden z-50",
               alignmentClasses[align],
               type === "grid" ? "w-[600px] max-w-[90vw]" : "w-[240px]"
             )}
-            style={{ marginTop: "-1px" }}
+            style={{ top: "calc(100% + 1px)" }}
           >
             <div className={cn(
               "p-2",
@@ -102,10 +102,10 @@ export function NavigationDropdown({
                   key={item.title}
                   href={item.href}
                   className={cn(
-                    "rounded-lg transition-colors",
+                    "rounded-lg transition-all",
                     type === "grid" 
-                      ? "flex gap-3 p-3 hover:bg-muted/50 group"
-                      : "block px-4 py-2 hover:bg-muted text-sm"
+                      ? "flex gap-3 p-3 hover:bg-muted/80 group"
+                      : "block px-4 py-2 hover:bg-muted/80 text-sm"
                   )}
                   onClick={() => setIsOpen(false)}
                 >

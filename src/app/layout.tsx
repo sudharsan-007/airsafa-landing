@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Airsafa - Flying soon!",
+  title: "Air Safa - Flying soon!",
   description: "Connect the unconnected",
 };
 

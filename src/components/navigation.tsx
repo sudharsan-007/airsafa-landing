@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { MenuBar } from "@/components/ui/glow-menu";
@@ -54,19 +54,19 @@ export function Navigation() {
   }, []);
 
   // Determine active item based on current path
-  const getActiveItem = () => {
+  const getActiveItem = useCallback(() => {
     if (pathname === "/") return "Home";
     if (pathname === "/about") return "About";
     if (pathname === "/services") return "Services";
     if (pathname === "/contact") return "Contact";
     return "Home";
-  };
+  }, [pathname]);
 
   const [activeItem, setActiveItem] = useState<string>(getActiveItem());
 
   useEffect(() => {
     setActiveItem(getActiveItem());
-  }, [pathname]);
+  }, [pathname, getActiveItem]);
 
   const handleItemClick = () => {
     setIsMobileMenuOpen(false);
