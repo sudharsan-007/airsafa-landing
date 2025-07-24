@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { useTheme } from "next-themes";
@@ -20,49 +20,62 @@ export const MenuItem = ({
   item,
   children,
 }: {
-  setActive: (item: string) => void;
+  setActive: (item: string | null) => void;
   active: string | null;
   item: string;
   children?: React.ReactNode;
 }) => {
   const { theme } = useTheme();
+  const [isOpen, setIsOpen] = React.useState(false);
   
   return (
     <div 
-      onMouseEnter={() => setActive(item)} 
-      onMouseLeave={() => setActive(null)}
       className="relative"
+      onMouseEnter={() => {
+        setActive(item);
+        setIsOpen(true);
+      }}
+      onMouseLeave={() => {
+        setIsOpen(false);
+        setTimeout(() => {
+          if (!isOpen) setActive(null);
+        }, 100);
+      }}
     >
       <motion.p
         transition={{ duration: 0.3 }}
-        className="cursor-pointer text-muted-foreground hover:text-foreground transition-colors py-2"
+        className="cursor-pointer text-muted-foreground hover:text-foreground transition-colors py-2 px-3"
       >
         {item}
       </motion.p>
-      {active !== null && (
+      {active === item && (
         <motion.div
-          initial={{ opacity: 0, scale: 0.85, y: 10 }}
+          initial={{ opacity: 0, scale: 0.95, y: 0 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: 0 }}
           transition={transition}
+          className="absolute top-full left-0 pt-2"
+          onMouseEnter={() => {
+            setIsOpen(true);
+            setActive(item);
+          }}
+          onMouseLeave={() => {
+            setIsOpen(false);
+            setActive(null);
+          }}
         >
-          {active === item && (
-            <div className="absolute top-[calc(100%_+_0.5rem)] left-1/2 transform -translate-x-1/2 pt-3">
-              <motion.div
-                transition={transition}
-                layoutId="active"
-                className="bg-card backdrop-blur-xl rounded-2xl overflow-hidden border border-border shadow-xl"
-                onMouseEnter={() => setActive(item)}
-                onMouseLeave={() => setActive(null)}
-              >
-                <motion.div
-                  layout
-                  className="w-max h-full p-4"
-                >
-                  {children}
-                </motion.div>
-              </motion.div>
-            </div>
-          )}
+          <motion.div
+            transition={transition}
+            layoutId="active-dropdown"
+            className="bg-card backdrop-blur-xl rounded-xl overflow-hidden border border-border shadow-xl"
+          >
+            <motion.div
+              layout
+              className="w-max h-full p-4"
+            >
+              {children}
+            </motion.div>
+          </motion.div>
         </motion.div>
       )}
     </div>
@@ -99,24 +112,24 @@ export const ProductItem = ({
   return (
     <Link 
       href={href} 
-      className="flex gap-3 p-2 rounded-lg hover:bg-muted/50 transition-all group"
+      className="flex gap-3 p-3 rounded-lg hover:bg-muted/50 transition-all group min-w-[300px]"
     >
       {src && (
-        <div className="flex-shrink-0 w-[140px] h-[70px] rounded-md overflow-hidden bg-muted relative">
+        <div className="flex-shrink-0 w-[120px] h-[60px] rounded-md overflow-hidden bg-muted relative">
           <Image
             src={src}
             alt={title}
             fill
             className="object-cover"
-            sizes="140px"
+            sizes="120px"
           />
         </div>
       )}
-      <div className="flex-1">
-        <h4 className="text-base font-semibold mb-1 text-foreground group-hover:text-primary transition-colors">
+      <div className="flex-1 min-w-0">
+        <h4 className="text-sm font-semibold mb-1 text-foreground group-hover:text-primary transition-colors">
           {title}
         </h4>
-        <p className="text-sm text-muted-foreground line-clamp-2">
+        <p className="text-xs text-muted-foreground line-clamp-2">
           {description}
         </p>
       </div>

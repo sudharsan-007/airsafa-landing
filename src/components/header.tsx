@@ -1,22 +1,17 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { MenuItem, HoveredLink, ProductItem } from "@/components/ui/navbar-menu";
-import { Menu, X, Sun, Moon, MoveRight } from "lucide-react";
-import { useState, useEffect } from "react";
+import { NavigationDropdown } from "@/components/ui/navigation-dropdown";
+import { ThemeDropdown } from "@/components/ui/theme-dropdown";
+import { ThemeSelectorMobile } from "@/components/ui/theme-selector-mobile";
+import { Menu, X, MoveRight } from "lucide-react";
+import { useState } from "react";
 import Link from "next/link";
-import { useTheme } from "next-themes";
 import { usePathname } from "next/navigation";
 
 export function Header() {
-    const { theme, setTheme } = useTheme();
-    const [mounted, setMounted] = useState(false);
     const pathname = usePathname();
-    const [active, setActive] = useState<string | null>(null);
-    
-    useEffect(() => {
-        setMounted(true);
-    }, []);
+    const [isOpen, setOpen] = useState(false);
 
     const navigationItems: Array<{
         title: string;
@@ -83,16 +78,11 @@ export function Header() {
             ],
         },
     ];
-
-    const [isOpen, setOpen] = useState(false);
     
     return (
-        <header className="w-full z-40 fixed top-0 left-0 bg-background/80 backdrop-blur-sm border-b border-border">
-            <div className="container relative mx-auto min-h-20 flex gap-4 flex-row lg:grid lg:grid-cols-3 items-center">
-                <div 
-                    className="justify-start items-center gap-6 lg:flex hidden flex-row"
-                    onMouseLeave={() => setActive(null)}
-                >
+        <header className="w-full z-50 fixed top-0 left-0 bg-background/80 backdrop-blur-sm border-b border-border">
+            <div className="container relative mx-auto px-4 md:px-6 min-h-16 md:min-h-20 flex gap-4 flex-row lg:grid lg:grid-cols-3 items-center">
+                <nav className="justify-start items-center gap-1 lg:flex hidden flex-row">
                     {navigationItems.map((item) => (
                         item.href ? (
                             <Link 
@@ -102,44 +92,25 @@ export function Header() {
                                     pathname === item.href 
                                         ? "font-semibold text-foreground" 
                                         : "text-muted-foreground"
-                                } hover:text-foreground transition-colors`}
+                                } hover:text-foreground transition-colors py-2 px-3`}
                             >
                                 {item.title}
                             </Link>
-                        ) : (
-                            <MenuItem 
+                        ) : item.items ? (
+                            <NavigationDropdown
                                 key={item.title}
-                                setActive={setActive} 
-                                active={active} 
-                                item={item.title}
-                            >
-                                {item.title === "Services" ? (
-                                    <div className="grid grid-cols-2 gap-4 p-2">
-                                        {item.items?.map((subItem) => (
-                                            <ProductItem
-                                                key={subItem.title}
-                                                title={subItem.title}
-                                                description={subItem.description}
-                                                href={subItem.href}
-                                                src={subItem.src}
-                                            />
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <div className="flex flex-col space-y-3 text-sm min-w-[240px]">
-                                        {item.items?.map((subItem) => (
-                                            <HoveredLink key={subItem.title} href={subItem.href}>
-                                                {subItem.title}
-                                            </HoveredLink>
-                                        ))}
-                                    </div>
-                                )}
-                            </MenuItem>
-                        )
+                                trigger={item.title}
+                                items={item.items}
+                                type={item.title === "Services" ? "grid" : "list"}
+                                align="left"
+                            />
+                        ) : null
                     ))}
-                </div>
-                <div className="flex lg:justify-center">
-                    <p className="font-bold text-2xl text-foreground">Airsafa</p>
+                </nav>
+                <div className="flex lg:justify-center flex-1 lg:flex-none">
+                    <Link href="/" className="font-bold text-xl md:text-2xl text-foreground hover:text-primary transition-colors">
+                        Airsafa
+                    </Link>
                 </div>
                 <div className="flex justify-end w-full gap-4">
                     <Button 
@@ -155,94 +126,67 @@ export function Header() {
                     >
                         Book Flights
                     </Button>
-                    {mounted && (
-                        <Button
-                            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                            className="hidden md:inline"
-                        >
-                            {theme === "dark" ? (
-                                <>
-                                    <Sun className="h-4 w-4 mr-2" />
-                                    Light Mode
-                                </>
-                            ) : (
-                                <>
-                                    <Moon className="h-4 w-4 mr-2" />
-                                    Dark Mode
-                                </>
-                            )}
-                        </Button>
-                    )}
+                    <div className="hidden md:block">
+                        <ThemeDropdown />
+                    </div>
                 </div>
-                <div className="flex w-12 shrink lg:hidden items-end justify-end">
+                <div className="flex lg:hidden items-center justify-end">
                     <Button 
                         variant="ghost" 
                         onClick={() => setOpen(!isOpen)}
-                        className="p-2 text-muted-foreground hover:text-foreground"
+                        className="p-2 h-auto text-muted-foreground hover:text-foreground"
+                        size="icon"
                     >
                         {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                     </Button>
                     {isOpen && (
-                        <div className="absolute top-20 flex flex-col w-full right-0 bg-background/95 backdrop-blur-md shadow-xl py-4 container gap-8 border border-border rounded-lg">
-                            {navigationItems.map((item) => (
-                                <div key={item.title}>
-                                    <div className="flex flex-col gap-2">
+                        <>
+                            <div 
+                                className="fixed inset-0 bg-background/80 backdrop-blur-sm lg:hidden" 
+                                onClick={() => setOpen(false)}
+                            />
+                            <div className="fixed top-16 left-4 right-4 bg-background border border-border rounded-lg shadow-xl overflow-hidden lg:hidden">
+                                <div className="p-6 flex flex-col gap-6 max-h-[calc(100vh-100px)] overflow-y-auto">
+                                {navigationItems.map((item, index) => (
+                                    <div key={item.title} className="space-y-2">
+                                        {index > 0 && <div className="border-t border-border" />}
                                         {item.href ? (
                                             <Link
                                                 href={item.href}
                                                 onClick={() => setOpen(false)}
-                                                className="flex justify-between items-center"
+                                                className="flex justify-between items-center py-2 px-2 rounded-lg hover:bg-muted transition-colors"
                                             >
-                                                <span className="text-lg text-foreground">{item.title}</span>
-                                                <MoveRight className="w-4 h-4 stroke-1 text-muted-foreground" />
+                                                <span className="text-base font-medium">{item.title}</span>
+                                                <MoveRight className="w-4 h-4 text-muted-foreground" />
                                             </Link>
                                         ) : (
-                                            <p className="text-lg font-semibold text-foreground">{item.title}</p>
+                                            <>
+                                                <p className="text-base font-semibold px-2 py-1">{item.title}</p>
+                                                <div className="space-y-1">
+                                                    {item.items?.map((subItem) => (
+                                                        <Link
+                                                            key={subItem.title}
+                                                            href={subItem.href}
+                                                            onClick={() => setOpen(false)}
+                                                            className="flex justify-between items-center py-2 px-4 rounded-lg hover:bg-muted transition-colors"
+                                                        >
+                                                            <span className="text-sm">{subItem.title}</span>
+                                                            <MoveRight className="w-4 h-4 text-muted-foreground" />
+                                                        </Link>
+                                                    ))}
+                                                </div>
+                                            </>
                                         )}
-                                        {item.items &&
-                                            item.items.map((subItem) => (
-                                                <Link
-                                                    key={subItem.title}
-                                                    href={subItem.href}
-                                                    onClick={() => setOpen(false)}
-                                                    className="flex justify-between items-center pl-4"
-                                                >
-                                                    <div className="flex-1">
-                                                        <p className="font-medium text-foreground">{subItem.title}</p>
-                                                        {subItem.description && (
-                                                            <p className="text-sm text-muted-foreground">{subItem.description}</p>
-                                                        )}
-                                                    </div>
-                                                    <MoveRight className="w-4 h-4 stroke-1" />
-                                                </Link>
-                                            ))}
                                     </div>
+                                ))}
+                                <div className="border-t border-border pt-4 flex flex-col gap-4">
+                                    <Button variant="outline" className="w-full">Book Flights</Button>
+                                    <Button variant="ghost" className="w-full">Blogs</Button>
+                                    <ThemeSelectorMobile />
                                 </div>
-                            ))}
-                            <div className="border-t border-border pt-4 flex flex-col gap-4">
-                                <Button variant="outline" className="w-full">Book Flights</Button>
-                                <Button variant="ghost" className="w-full">Blogs</Button>
-                                {mounted && (
-                                    <Button
-                                        variant="ghost"
-                                        className="w-full justify-start"
-                                        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                                    >
-                                        {theme === "dark" ? (
-                                            <>
-                                                <Sun className="h-5 w-5 mr-2" />
-                                                Light Mode
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Moon className="h-5 w-5 mr-2" />
-                                                Dark Mode
-                                            </>
-                                        )}
-                                    </Button>
-                                )}
+                                </div>
                             </div>
-                        </div>
+                        </>
                     )}
                 </div>
             </div>
