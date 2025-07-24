@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Navigation } from "@/components/navigation";
+import { Header } from "@/components/header";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
@@ -34,18 +34,18 @@ const darkGlobeConfig = {
 
 const lightGlobeConfig = {
   pointSize: 4,
-  globeColor: "#dbeafe",
+  globeColor: "#f3f4f6",
   showAtmosphere: true,
-  atmosphereColor: "#60a5fa",
+  atmosphereColor: "#d1d5db",
   atmosphereAltitude: 0.1,
-  emissive: "#3b82f6",
+  emissive: "#9ca3af",
   emissiveIntensity: 0.02,
   shininess: 0.9,
-  polygonColor: "rgba(59,130,246,0.3)",
-  ambientLight: "#60a5fa",
-  directionalLeftLight: "#3b82f6",
-  directionalTopLight: "#3b82f6",
-  pointLight: "#3b82f6",
+  polygonColor: "rgba(156,163,175,0.3)",
+  ambientLight: "#e5e7eb",
+  directionalLeftLight: "#f3f4f6",
+  directionalTopLight: "#f3f4f6",
+  pointLight: "#f3f4f6",
   arcTime: 1000,
   arcLength: 0.9,
   rings: 1,
@@ -430,12 +430,12 @@ export default function HomePage() {
   const globeConfig = theme === "light" ? lightGlobeConfig : darkGlobeConfig;
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white">
-      {/* Navigation */}
-      <Navigation />
+    <div className="min-h-screen bg-background text-foreground">
+      {/* Header */}
+      <Header />
 
       {/* Hero Section */}
-      <section id="home" className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
+      <section id="home" className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-20">
         {/* Background Globe */}
         <div className="absolute inset-0 w-full h-full">
           {mounted && <World data={sampleArcs} globeConfig={globeConfig} isDark={theme !== "light"} />}
@@ -446,7 +446,7 @@ export default function HomePage() {
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6">
             Airsafa 
           </h1>
-          <p className="text-xl sm:text-2xl text-gray-700 dark:text-gray-300 mb-8">
+          <p className="text-xl sm:text-2xl text-muted-foreground mb-8">
             Connect the unconnected - Flying soon!
           </p>
         </div>
