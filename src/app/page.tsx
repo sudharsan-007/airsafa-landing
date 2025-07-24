@@ -2,12 +2,14 @@
 
 import dynamic from "next/dynamic";
 import { Navigation } from "@/components/navigation";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
 const World = dynamic(() => import("@/components/ui/globe").then((m) => m.World), {
   ssr: false,
 });
 
-const globeConfig = {
+const darkGlobeConfig = {
   pointSize: 4,
   globeColor: "#062056",
   showAtmosphere: true,
@@ -21,6 +23,29 @@ const globeConfig = {
   directionalLeftLight: "#ffffff",
   directionalTopLight: "#ffffff",
   pointLight: "#ffffff",
+  arcTime: 1000,
+  arcLength: 0.9,
+  rings: 1,
+  maxRings: 3,
+  initialPosition: { lat: 22.3193, lng: 114.1694 },
+  autoRotate: true,
+  autoRotateSpeed: 0.5,
+};
+
+const lightGlobeConfig = {
+  pointSize: 4,
+  globeColor: "#dbeafe",
+  showAtmosphere: true,
+  atmosphereColor: "#60a5fa",
+  atmosphereAltitude: 0.1,
+  emissive: "#3b82f6",
+  emissiveIntensity: 0.02,
+  shininess: 0.9,
+  polygonColor: "rgba(59,130,246,0.3)",
+  ambientLight: "#60a5fa",
+  directionalLeftLight: "#3b82f6",
+  directionalTopLight: "#3b82f6",
+  pointLight: "#3b82f6",
   arcTime: 1000,
   arcLength: 0.9,
   rings: 1,
@@ -395,8 +420,17 @@ const sampleArcs = [
 ];
 
 export default function HomePage() {
+  const { theme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const globeConfig = theme === "light" ? lightGlobeConfig : darkGlobeConfig;
+
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white">
       {/* Navigation */}
       <Navigation />
 
@@ -404,7 +438,7 @@ export default function HomePage() {
       <section id="home" className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
         {/* Background Globe */}
         <div className="absolute inset-0 w-full h-full">
-          <World data={sampleArcs} globeConfig={globeConfig} />
+          {mounted && <World data={sampleArcs} globeConfig={globeConfig} isDark={theme !== "light"} />}
         </div>
         
         {/* Hero Content */}
@@ -412,7 +446,7 @@ export default function HomePage() {
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6">
             Airsafa 
           </h1>
-          <p className="text-xl sm:text-2xl text-gray-300 mb-8">
+          <p className="text-xl sm:text-2xl text-gray-700 dark:text-gray-300 mb-8">
             Connect the unconnected - Flying soon!
           </p>
         </div>

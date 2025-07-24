@@ -234,25 +234,27 @@ export function Globe({ globeConfig, data }: WorldProps) {
   return <group ref={groupRef} />;
 }
 
-export function WebGLRendererConfig() {
+export function WebGLRendererConfig({ isDark }: { isDark: boolean }) {
   const { gl, size } = useThree();
 
   useEffect(() => {
     gl.setPixelRatio(window.devicePixelRatio);
     gl.setSize(size.width, size.height);
-    gl.setClearColor(0xffaaff, 0);
-  }, [gl, size]);
+    // Set background color based on theme
+    gl.setClearColor(isDark ? 0x000000 : 0xffffff, 1);
+  }, [gl, size, isDark]);
 
   return null;
 }
 
-export function World(props: WorldProps) {
-  const { globeConfig } = props;
+export function World(props: WorldProps & { isDark?: boolean }) {
+  const { globeConfig, isDark = true } = props;
   const scene = new Scene();
-  scene.fog = new Fog(0xffffff, 400, 2000);
+  scene.fog = new Fog(isDark ? 0x000000 : 0xffffff, 400, 2000);
+  
   return (
     <Canvas scene={scene} camera={new PerspectiveCamera(50, aspect, 180, 1800)}>
-      <WebGLRendererConfig />
+      <WebGLRendererConfig isDark={isDark} />
       <ambientLight color={globeConfig.ambientLight} intensity={0.6} />
       <directionalLight
         color={globeConfig.directionalLeftLight}

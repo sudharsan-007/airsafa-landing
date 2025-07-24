@@ -4,8 +4,9 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { MenuBar } from "@/components/ui/glow-menu";
-import { Home, Info, Mail, Briefcase, Menu, X } from "lucide-react";
+import { Home, Info, Mail, Briefcase, Menu, X, Sun, Moon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTheme } from "next-themes";
 
 const menuItems = [
   {
@@ -44,7 +45,13 @@ const menuItems = [
 
 export function Navigation() {
   const pathname = usePathname();
+  const { theme, setTheme } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Determine active item based on current path
   const getActiveItem = () => {
@@ -68,17 +75,30 @@ export function Navigation() {
   return (
     <>
       {/* Desktop Navigation - Floating Centered */}
-      <div className="fixed top-8 left-1/2 transform -translate-x-1/2 z-50 hidden md:block">
+      <div className="fixed top-8 left-1/2 transform -translate-x-1/2 z-50 hidden md:flex items-center gap-4">
         <MenuBar
           items={menuItems}
           activeItem={activeItem}
           onItemClick={handleItemClick}
         />
+        {mounted && (
+          <button
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            className="p-2 rounded-xl backdrop-blur-lg bg-background/80 border border-border/40 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
+            aria-label="Toggle theme"
+          >
+            {theme === "dark" ? (
+              <Sun className="h-5 w-5" />
+            ) : (
+              <Moon className="h-5 w-5" />
+            )}
+          </button>
+        )}
       </div>
 
       {/* Mobile Menu Button - Floating Circle */}
       <button
-        className="md:hidden fixed top-8 right-8 z-50 w-12 h-12 rounded-full backdrop-blur-lg bg-background/80 border border-border/40 flex items-center justify-center hover:bg-gray-800 transition-colors"
+        className="md:hidden fixed top-8 right-8 z-50 w-12 h-12 rounded-full backdrop-blur-lg bg-background/80 border border-border/40 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         aria-label="Toggle menu"
       >
@@ -109,8 +129,8 @@ export function Navigation() {
                     <motion.div
                       className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-left ${
                         isActive
-                          ? "bg-gray-800 text-white"
-                          : "text-gray-400 hover:bg-gray-800/50 hover:text-white"
+                          ? "bg-gray-200 dark:bg-gray-800 text-black dark:text-white"
+                          : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/50 hover:text-black dark:hover:text-white"
                       }`}
                       whileHover={{ x: 5 }}
                       whileTap={{ scale: 0.98 }}
@@ -125,6 +145,21 @@ export function Navigation() {
                   </Link>
                 );
               })}
+              {mounted && (
+                <motion.button
+                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-left text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/50 hover:text-black dark:hover:text-white"
+                  whileHover={{ x: 5 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  {theme === "dark" ? (
+                    <Sun className="h-5 w-5" />
+                  ) : (
+                    <Moon className="h-5 w-5" />
+                  )}
+                  <span>{theme === "dark" ? "Light Mode" : "Dark Mode"}</span>
+                </motion.button>
+              )}
             </div>
           </motion.div>
         )}
