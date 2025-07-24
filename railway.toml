@@ -1,10 +1,10 @@
 [build]
 builder = "railpack"
-buildCommand = "bun install && bun run build"
+buildCommand = "npm install && npm run build"
 
 [build.env]
 NODE_ENV = "production"
 SKIP_ENV_VALIDATION = "1"
 
 [deploy]
-startCommand = "bun start"
+startCommand = "npm start"
