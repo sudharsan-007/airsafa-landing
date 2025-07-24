@@ -1,9 +1,10 @@
 [build]
-builder = "nixpacks"
-buildCommand = "bun run build"
+builder = "heroku"
+buildCommand = "bun install --frozen-lockfile && bun run build"
 
-[build.nixpacksConfig]
-packageManager = "bun"
+[build.env]
+NODE_ENV = "production"
+SKIP_ENV_VALIDATION = "1"
 
 [deploy]
 startCommand = "bun start"
