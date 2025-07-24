@@ -1,9 +1,9 @@
 [build]
 builder = "nixpacks"
-buildCommand = "npm run build"
+buildCommand = "bun run build"
 
 [build.nixpacksConfig]
-packageManager = "npm"
+packageManager = "bun"
 
 [deploy]
-startCommand = "npm start"
+startCommand = "bun start"
